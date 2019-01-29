@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from gymhttperror import InvalidUsage
-from GymWrapper import GymWrapper
+from gymwrapper import GymWrapper
 
 server = Flask(__name__)
 gymWrapper = GymWrapper()
@@ -17,7 +17,7 @@ def handle_invalid_usage(error):
     response.status_code = error.statusCode
     return response
 
-@server.route('/env/', methods=['POST'])
+@server.route('/env', methods=['POST'])
 def createEnv():
     requestData = request.get_json()
     envID = getJsonParam(requestData, "envID", None)
@@ -52,13 +52,12 @@ def step():
 
 @server.route('/env/reset', methods=['GET'])
 def resetEnvironment():
-    gymWrapper.resetEnvironment()
-    return "Successfully reseted environment"
+    initialState = gymWrapper.resetEnvironment()
+    return jsonify(initialState)
 
 @server.route('/env/clear', methods=['GET'])
 def clearEnvironment():
     gymWrapper.clearEnvironment()
     return "Successfully cleared environment"
 
-server.run("127.0.0.1", 8000)
-
+server.run("127.0.0.1", 8002)
